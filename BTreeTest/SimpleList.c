@@ -92,6 +92,7 @@ bool removeListItem(List* list, void* data)
 	}
 }
 
+// returns index of item if found, otherwise -1
 int findListItem(List* list, void* data)
 {
 	if (list != NULL && data != NULL)

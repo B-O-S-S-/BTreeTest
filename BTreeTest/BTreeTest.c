@@ -22,26 +22,38 @@ int main(int argc, char** args)
 			printf(" %s", args[i]);
 		}
 
+		// Test the list implementation
+
 		List testList;
 		testList.first = NULL;
 		testList.count = 0;
 		testList.compareData = &stringComparator;
 
+		// test adding items
 		bool result = true;
 		for (int i = 1; i < argc; i++)
 		{
-			result = result && addListItem(&testList, (void*)args[i]);
+			result = addListItem(&testList, (void*)args[i]);
+			printf("\nAdding %s %s.", args[i], result ? "succeeded" : "failed");
 		}
-		printf("\ninsert result = %d\n", result);
 
 		if (result)
 		{
-			/*for(int i = 1; i < argc; i++)
+			// insertion test succeeded, test search
+			// start at args[0] to test search for nonexisting items
+			for (int i = 0; i < argc; i++)
 			{
-			result = result && addListItem(&testList, (void*) args[i]);
-			}*/
-			int r2 = findListItem(&testList, args[1]);
-			printf("Found %s at position %d\n", args[1], r2);
+				int idx = findListItem(&testList, (void*)args[i]);
+				printf("\n%s %s at position %d", idx >= 0 ? "Found" : "Did not find", args[i], idx);
+			}
+
+			// test deleting all items including nonexistent
+
+			for (int i = 0; i < argc; i++)
+			{
+				result = removeListItem(&testList, (void*)args[i]);
+				printf("\nRemoving %s from list %s.", args[i], result ? "succeeded" : "failed");
+			}
 		}
 		else
 		{
