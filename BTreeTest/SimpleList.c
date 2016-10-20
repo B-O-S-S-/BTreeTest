@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-bool addListItem(List* list, void* data)	// add an item into a sorted list, smallest item first
+bool addListItem(List* list, const void* data)	// add an item into a sorted list, smallest item first
 {
 	if (list != NULL && data != NULL)
 	{
@@ -58,7 +58,7 @@ bool addListItem(List* list, void* data)	// add an item into a sorted list, smal
 	}
 }
 
-bool removeListItem(List* list, void* data)
+bool removeListItem(List* list, const void* data)
 {
 	if (list != NULL && data != NULL)
 	{
@@ -93,7 +93,7 @@ bool removeListItem(List* list, void* data)
 }
 
 // returns index of item if found, otherwise -1
-int findListItem(List* list, void* data)
+int findListItem(const List* list, const void* data)
 {
 	if (list != NULL && data != NULL)
 	{

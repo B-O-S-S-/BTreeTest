@@ -15,6 +15,6 @@ typedef struct SortedDLList
 	int(*compareData)(void*, void*);
 } List;
 
-bool addListItem(List* list, void* data);
-bool removeListItem(List* list, void* data);
-int findListItem(List* list, void* data); // return position of item or -1 if not present
+bool addListItem(List* list, const void* data);
+bool removeListItem(List* list, const void* data);
+int findListItem(const List* list, const void* data); // return position of item or -1 if not present
