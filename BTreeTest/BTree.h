@@ -4,7 +4,7 @@
 typedef struct B_TreeNode
 {
 	bool isLeaf;
-	List keys;
+	struct SortedDLList keys;
 	struct B_TreeNode* children;
 } BTreeNode;
 

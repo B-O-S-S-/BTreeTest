@@ -3,9 +3,9 @@
 
 #include "stdafx.h"
 
-int stringComparator(void* first, void* second)
+int stringComparator(const void* first, const void* second)
 {
-	return strcmp((char*)first, (char*)second);
+	return strcmp((const char*)first, (const char*)second);
 }
 
 int main(int argc, char** args)

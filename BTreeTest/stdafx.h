@@ -15,5 +15,5 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "BTree.h"
 #include "SimpleList.h"
+#include "BTree.h"

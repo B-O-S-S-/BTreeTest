@@ -10,15 +10,50 @@ BTreeSearchResult searchBTree(const BTree* bTree, const char* key)
 		BTreeSearchResult result = { .found = false, .node = NULL, .index = -1 };
 		return result;
 	}
-	else
+	else // tree not empty
 	{
 		BTreeNode* node = bTree->root;
-		if (node->isLeaf)
+		
+		while(!node->isLeaf) // not a leaf
 		{
-			int result = findListItem(node->keys, (void*) key)
+			CPData* pcpData = &key;
+			int index = findEqualOrFirstLargerListItem(&(node->keys), pcpData);
+			if (index >= 0)
+			{
+				int compKeys = strcmp(*pcpData, key);
+				if (compKeys == 0)
+				{
+					BTreeSearchResult result = { .found = true, .node = node, .index = index };
+					return result;
+				}
+				else if (compKeys > 0)// larger key was found -> search in child[index]
+				{
+					node = &(node->children[index]);
+				}
+				else // invalid key returned
+				{
+					printf("\nInvalid key returned from key list.");
+					BTreeSearchResult result = { .found = false, .node = NULL, .index = -1 };
+					return result;
+				}
+			}
+			else // key is larger than all keys in this node -> search in last child
+			{
+				node = &(node->children[node->keys.count]);
+			}
 		}
-		else
+		// node is leaf
+		int index = findListItem(&(node->keys), (void*)key);
+		BTreeSearchResult result;
+		if (index != -1)
 		{
+			BTreeSearchResult result = { .found = true, .node = node, .index = index };
+			return result;
+		}
+		else // didn't find key in leaf
+		{
+			BTreeSearchResult result = { .found = false, .node = NULL, .index = -1 };
+			return result;
 		}
 	}
 }

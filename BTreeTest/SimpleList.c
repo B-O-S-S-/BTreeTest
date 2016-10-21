@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-bool addListItem(List* list, const void* data)	// add an item into a sorted list, smallest item first
+bool addListItem(List* list, CPData data)	// add an item into a sorted list, smallest item first
 {
 	if (list != NULL && data != NULL)
 	{
@@ -16,18 +16,20 @@ bool addListItem(List* list, const void* data)	// add an item into a sorted list
 			}
 			else if (compared > 0) // proceeded far enough, insert right before current
 			{
-				ListItem* newItem = (ListItem*)malloc(sizeof(ListItem));
-				newItem->data = data;
-				newItem->prev = current->prev;
-				newItem->next = current;
-				current->prev = newItem;
+				ListItem tempNewItem = { .data = data, .prev = current->prev, .next = current };
+				ListItem* pNewItem = malloc(sizeof(*pNewItem));
+				if (pNewItem == NULL)
+					abort();
+				memcpy(pNewItem, &tempNewItem, sizeof(pNewItem));
+				
+				current->prev = pNewItem;
 				if (prev == NULL) // new head
 				{
-					list->first = newItem;
+					list->first = pNewItem;
 				}
 				else
 				{
-					prev->next = newItem;
+					prev->next = pNewItem;
 				}
 				list->count++;
 				return true; // item inserted before the end
@@ -37,17 +39,18 @@ bool addListItem(List* list, const void* data)	// add an item into a sorted list
 				return false;
 			}
 		}
-		ListItem* newItem = (ListItem*)malloc(sizeof(ListItem));
-		newItem->data = data;
-		newItem->prev = prev;
-		newItem->next = NULL;
+		ListItem tempNewItem = { .data = data, .prev = prev, .next = NULL };
+		ListItem* pNewItem = malloc(sizeof(*pNewItem));
+		if (pNewItem == NULL)
+			abort();
+		memcpy(pNewItem, &tempNewItem, sizeof(pNewItem));
 		if (prev == NULL) // empty list
 		{
-			list->first = newItem;
+			list->first = pNewItem;
 		}
 		else // reached end of nonempty list
 		{
-			prev->next = newItem;
+			prev->next = pNewItem;
 		}
 		list->count++;
 		return true;
@@ -58,7 +61,7 @@ bool addListItem(List* list, const void* data)	// add an item into a sorted list
 	}
 }
 
-bool removeListItem(List* list, const void* data)
+bool removeListItem(List* list, CPData data)
 {
 	if (list != NULL && data != NULL)
 	{
@@ -80,6 +83,7 @@ bool removeListItem(List* list, const void* data)
 					current->prev->next = current->next;
 				}
 				free(current);
+				list->count--;
 				return true;
 			}
 			current = current->next;
@@ -93,7 +97,7 @@ bool removeListItem(List* list, const void* data)
 }
 
 // returns index of item if found, otherwise -1
-int findListItem(const List* list, const void* data)
+int findListItem(const List* list, CPData data)
 {
 	if (list != NULL && data != NULL)
 	{
@@ -103,6 +107,32 @@ int findListItem(const List* list, const void* data)
 		{
 			if (list->compareData(current->data, data) == 0)
 			{
+				return position;
+			}
+			else
+			{
+				position++;
+				current = current->next;
+			}
+		}
+	}
+	return -1;
+}
+
+// returns index of equal item if found, otherwise index of first larger item, if none found: -1
+// paramter data: input: the data to find. After execution: the data at the index returned
+int findEqualOrFirstLargerListItem(const List* list, CPData* pcpData)
+{
+	CPData cpData = *pcpData;
+	if (list != NULL && cpData != NULL)
+	{
+		int position = 0;
+		ListItem* current = list->first;
+		while (current != NULL)
+		{
+			if (list->compareData(current->data, cpData) >= 0)
+			{
+				pcpData = &(current->data);
 				return position;
 			}
 			else
